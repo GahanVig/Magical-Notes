@@ -98,7 +98,7 @@ async function search() {
     let query = searchInput.value;
     let searchedNotes = [];
     notes.forEach(element => {
-        if (String(element.title).includes(query) || String(element.content).includes(query)) {
+        if (String(element.title).toLowerCase().includes(query.toLowerCase()) || String(element.content).toLowerCase().includes(query.toLowerCase())) {
             searchedNotes.push({
                 title: element.title,
                 content: element.content
