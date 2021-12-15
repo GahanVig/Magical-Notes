@@ -1,0 +1,91 @@
+:root {
+    --dark-background: rgb(82, 83, 85);
+    --light-font-color: #e9e6e0;
+    --add-note-font-color: rgba(232, 232, 232, 0.7);
+}
+
+/* Styling Global classes */
+* {
+    color: white;
+}
+.bg-dark {
+    background: rgb(32, 33, 36) !important;
+}
+.border{
+    border: 1px solid var(--dark-background) !important;
+}
+.inputDefaults {
+    border: none;
+    background: var(--dark-background) !important;
+    color: var(--light-font-color) !important;
+    padding: 12px;
+    box-shadow: none;
+}
+
+i{
+    color: white;
+    font-size:30px;
+}
+i:hover{
+    cursor: pointer;
+}
+input,
+textarea,
+input::placeholder,
+textarea::placeholder {
+    color: var(--light-font-color) !important;
+}
+.inputDefaults:hover {
+    color: var(--light-font-color) !important;
+}
+.icon{
+    color: var(--add-note-font-color);
+    float: right;
+    text-align: center;
+    display: grid;
+    place-items: center;
+    padding: 3px 3px;
+    height: 35px;
+    width: 35px;
+}
+.icon:hover{
+    background: rgba(82, 83, 85, 0.5) !important;
+}
+/* Designing the Navigation menu */
+.navbar{
+    height: 70px;
+    background: #202124;
+}
+.rightNav {
+    width: 75%;
+}
+.leftNav{
+    width: 16%;
+}
+#searchInput {
+    width: 50%;
+    border: none;
+    background: var(--dark-background);
+    color: var(--light-font-color);
+    box-shadow: none;
+}
+
+/* Styling the Add Notes Container */
+
+#noteContent, #noteContent::placeholder, #noteTitle, #noteTitle::placeholder{
+    line-height: 24px;
+    font-size: 15px;
+    box-shadow: none;
+    color: rgba(232, 232, 232, 0.7) !important;
+    font-weight: 500;
+}
+#noteTitle, #noteTitle::placeholder{
+    font-size: 19px;
+}
+/* Styling the Notes and Notes Container */
+.note{
+    width: 18rem;
+    margin: 10px;
+    padding: 10px;
+    transition-duration: 0.5s;
+}
