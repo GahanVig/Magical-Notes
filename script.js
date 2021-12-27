@@ -22,7 +22,10 @@ else {
 
 showNotes(notes)
 noteTitle.focus()
-
+// Function for adding masonry layout to the NoteContainer
+function masonry () {
+    const masonryGrid = new Masonry(notesContainer)
+}
 setInterval(() => {
     addNote.disabled = noteContent.value == '' || noteTitle.value == '';
     addEditedNote.disabled = editNoteContent.value == '' || editNoteTitle == ''
@@ -53,6 +56,7 @@ function showNotes(notes) {
         document.querySelector(`.title-${index}`).innerText = element.title;
         document.querySelector(`.content-${index}`).innerText = element.content;
     })
+    masonry()
 }
 async function displayClearSearchButton() {
     // This function will show the clear button when the search area is not empty
