@@ -1,92 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Magical Notes and Lists Application</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-        integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous"  referrerpolicy="no-referrer">
     <link rel="stylesheet" href="style.css">
 </head>
-
-<body class="bg-dark">
+<body class="bg-zinc-900">
     <!-- Navbar -->
-    <nav class="navbar navbar-dark">
-        <div class="container-fluid d-flex align-items-center" style="height: 100%;">
-            <div class="leftNav d-flex align-items-center justify-content-between fs-4">
+    <nav class="mx-4 flex items-center justify-between h-14">
+        <div class="w-2/12 text-3xl">
                 <div>Magical Notes</div>
             </div>
-            <div class="rightNav">
-                <div class="input-group">
-                    <span class="btn inputDefaults" type="button">
-                        <i class="fa fa-search"></i>
-                    </span>
-                    <input type="text" autocomplete="off" class="form-control" spellcheck="false"
-                        placeholder="Search..." id="searchInput">
-                    <button class="btn inputDefaults" type="button" onclick="searchInput.value=''; search()">
-                        <i class="fa fa-times d-none" id="clearSearchInput"></i>
-                    </button>
-                </div>
+            <div class="flex items-center w-96 px-2 py-2 rounded-md bg-zinc-800 space-x-3">
+                <span class="" type="button">
+                    <i class="fa fa-search text-xl rounded-md bg-zinc-800"></i>
+                </span>
+                <input type="text" autocomplete="off" class="w-full outline-0 bg-zinc-800" spellcheck="false" placeholder="Search..." id="searchInput">
+                <button class="rounded-md" onclick="searchInput.value='';">
+                    <i class="fa fa-times text-xl opacity-0 bg-zinc-800" id="clearSearchInput"></i>
+                </button>
             </div>
-        </div>
     </nav>
-    <hr class="bg-light">
-    <div class="w-75 d-flex justify-content-end">
-        <div class="addNotesContainer w-50 border rounded-3 py-2">
-            <input type="text" autocomplete="off" class="w-100 form-control border-0 py-2 bg-dark" placeholder="Title"
-                id="noteTitle">
-            <textarea autocomplete="off" class="w-100 form-control border-0 py-2 bg-dark" placeholder="Take a Note..."
-                id="noteContent" style="overflow: hidden;"></textarea>
-            <div class="d-flex justify-content-end mx-3 my-2">
-                <button class="btn w-25 icon rounded" id="addNote" style="color: var(--add-note-font-color);">Add
-                    Note</button>
-            </div>
+    <hr class="mb-4">
+    <!-- Add Notes Section -->
+        <div class="flex justify-center my-4">
+            <form class="w-1/2 px-3 py-3 flex justify-center flex-col items-center border border-zinc-500 rounded">
+                <input type="text" autocomplete="off" class="py-2 text-lg w-full font-semibold" placeholder="Title" id="noteTitle">
+                <textarea class="py-2 w-full text-base" placeholder="Take a Note..."
+                    id="noteContent"></textarea>
+                <div class="w-full flex justify-end">
+                    <button class="px-3 py-2  rounded-lg mt-4 cursor-pointer hover:bg-opacity-50 hover:bg-neutral-700" id="addNote">Add Note</button>
+                </div>
+            </form>
         </div>
-    </div>
-    <!-- Modal for edit note -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog bg-dark">
-            <div class="modal-content bg-dark">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Editing Note</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <label>Title: </label>
-                    <input type="text" autocomplete="off" class="my-2 w-100 border form-control border-0 py-2 bg-dark" placeholder="Title" id="editNoteTitle">
-                    <label>Content: </label>
-                    <textarea autocomplete="off" class="my-2 w-100 border form-control border-0 py-2 bg-dark"
-                        placeholder="Take a Note..." id="editNoteContent" style="overflow: hidden;"></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="addEditedNote" data-bs-dismiss="modal">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- Notes Container Containing all Notes -->
-    <div class="container-fluid my-4" id="notesContainer"></div>
-    <!-- Delete  Message  -->
-    <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 11">
-        <div id="liveToast" class="toast bg-dark" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header d-flex justify-content-end">
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body" id="msg"></div>
-        </div>
-    </div>
+    <div class="mx-10 my-4" id="notesContainer"></div>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-    crossorigin="anonymous"></script>
-<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.js"></script>
-
+<script src="https://unpkg.com/@themesberg/flowbite@1.2.0/dist/flowbite.bundle.js"></script>
 <script src="script.js"></script>
-
 </html>

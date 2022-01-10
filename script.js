@@ -4,13 +4,8 @@ const notesContainer = document.getElementById("notesContainer");
 const noteContent = document.getElementById("noteContent");
 const noteTitle = document.getElementById("noteTitle");
 const searchInput = document.getElementById("searchInput");
-const editNoteTitle = document.getElementById("editNoteTitle");
-const editNoteContent = document.getElementById("editNoteContent");
-const addEditedNote = document.getElementById("addEditedNote");
-
 // Accessing notes from the local storage
 let notes = localStorage.getItem("notes");
-let noOfNotes = 0; // Total No. of notes
 
 if (notes == null) {
     localStorage.setItem("notes", JSON.stringify([]));
@@ -19,8 +14,16 @@ if (notes == null) {
 else {
     notes = JSON.parse(localStorage.getItem("notes"))
 }
-
+const bgClasses = [
+    'bg-red-800',
+    'bg-green-900',
+    'bg-cyan-900',
+    'bg-purple-900',
+    'bg-rose-900',
+    'bg-yellow-900'
+];
 showNotes(notes)
+
 noteTitle.focus()
 // Function for adding masonry layout to the NoteContainer
 function masonry () {
@@ -28,24 +31,23 @@ function masonry () {
 }
 setInterval(() => {
     addNote.disabled = noteContent.value == '' || noteTitle.value == '';
-    addEditedNote.disabled = editNoteContent.value == '' || editNoteTitle == ''
+    addNote.classList.remove("hover:bg-neutral-700")
 }, 1);
 function showNotes(notes) {
     noteHTML = ``;
     notes.forEach((element, index) => {
         noteHTML += `
-        <div class="card border note bg-dark my-2 card-${index}">
-        
+        <div class="px-3 py-4 ${element.background} my-3 mx-3 rounded-lg shadow-sm shadow-black w-72">
             <div style="position: absolute; width: 100%;">
             </div>
-            <div class="card-body">
-                <h5 class="cardTitle noteTitle title-${index}"></h5>
-                <p class="card-text noteContent content-${index}"></p>
+            <div class="card-body mb-3 ${element.background}">
+                <h5 class="noteTitle ${element.background} font-semibold text-lg title-${index}"></h5>
+                <p class="noteContent ${element.background} text-md content-${index}"></p>
             </div>
-            <div class="d-flex align-items-center w-100 justify-content-end mx-2 my-2">
-                <div class="d-flex justify-content-evenly w-25">
-                    <i class="fa fa-pen fa-lg icon rounded-circle" data-bs-toggle="modal" data-bs-target="#editModal" onclick="editNote(${index})"></i>
-                    <i class="fa fa-trash-can fa-lg icon rounded-circle" id="showToast" onclick="deleteNote(${index})"></i>
+            <div class="flex items-center w-full ${element.background} justify-end mx-2 mt-6 mb-1">
+                <div class="flex justify-evenly w-1/4 ${element.background}">
+                    <i class="fa fa-pen fa-lg ${element.background} rounded-full cursor-pointer hover:bg-opacity-50 hover:bg-neutral-700" data-bs-toggle="modal" data-bs-target="#editModal" onclick="editNote(${index})"></i>
+                    <i class="fa fa-trash-can fa-lg ${element.background} rounded-full cursor-pointer hover:bg-opacity-50 hover:bg-neutral-700" onclick="deleteNote(${index})"></i>
                 </div>
             </div>
         </div>
@@ -56,16 +58,18 @@ function showNotes(notes) {
         document.querySelector(`.title-${index}`).innerText = element.title;
         document.querySelector(`.content-${index}`).innerText = element.content;
     })
-    masonry()
+    setTimeout(() => {
+        masonry();
+    }, 1);
 }
 async function displayClearSearchButton() {
     // This function will show the clear button when the search area is not empty
     let clearSearchInput = document.getElementById("clearSearchInput");
     if (searchInput.value != "") {
-        clearSearchInput.classList.remove("d-none");
+        clearSearchInput.classList.remove("opacity-0");
     }
     else {
-        clearSearchInput.classList.add("d-none");
+        clearSearchInput.classList.add("opacity-0");
     }
 }
 async function deleteNote(noteIndex) {
@@ -78,26 +82,26 @@ async function deleteNote(noteIndex) {
     }
     showNotes(notes)
     // Showing message to the user that the note is deleted
-    document.getElementById("msg").innerHTML = "Note Deleted Successfully"
-    toast = new bootstrap.Toast(document.getElementById("liveToast"))
-    toast.show()
-    setTimeout(() => {
-        toast.hide()
-    }, 5000)
 }
 async function editNote(noteIndex) {
-    editNoteTitle.value = notes[noteIndex].title;
-    editNoteTitle.title = `${noteIndex} note`;
-    editNoteContent.value = notes[noteIndex].content;
+    addNote.innerText = 'Save Edits';
+    noteTitle.value = notes[noteIndex].title;
+    noteContent.value = notes[noteIndex].content;
+    let random = Math.floor(Math.random() * bgClasses.length);
+    addNote.addEventListener("click", () =>{
+        if (addNote.innerText === "Save Edits") {
+            notes[noteIndex] = {
+                title: noteTitle.value,
+                content: noteContent.value,
+                background: bgClasses[random]
+            };
+            localStorage.setItem("notes", JSON.stringify(notes))
+            showNotes(notes)
+        }
+    })
+
 }
-async function saveEditedNote() {
-    notes[parseInt(editNoteTitle.title)] = {
-        title: editNoteTitle.value,
-        content: editNoteContent.value,
-    }
-    localStorage.setItem("notes", JSON.stringify(notes))
-    showNotes(notes)
-}
+
 async function search() {
     let query = searchInput.value;
     let searchedNotes = [];
@@ -105,24 +109,26 @@ async function search() {
         if (String(element.title).toLowerCase().includes(query.toLowerCase()) || String(element.content).toLowerCase().includes(query.toLowerCase())) {
             searchedNotes.push({
                 title: element.title,
-                content: element.content
+                content: element.content,
+                background: element.background
             })
         }
     })
     showNotes(searchedNotes);
 }
-editNoteContent.oninput = saveEditedNote;
-editNoteTitle.oninput = saveEditedNote;
 addNote.addEventListener("click", () => {
-    noOfNotes += 1;
-    notes.push({
-        title: noteTitle.value,
-        content: noteContent.value
-    })
-        localStorage.setItem("notes", JSON.stringify(notes));
-        showNotes(notes);
-        noteContent.value = null;
-        noteTitle.value = null;
+    let randomNum = Math.floor(Math.random() * bgClasses.length);
+    if (addNote.innerText === "Add Note"){
+        notes.push({
+            title: noteTitle.value,
+            content: noteContent.value,
+            background: bgClasses[randomNum]
+        })
+            localStorage.setItem("notes", JSON.stringify(notes));
+            showNotes(notes);
+            noteContent.value = null;
+            noteTitle.value = null;
+    }
 })
 
 searchInput.addEventListener("input", () => {
@@ -130,5 +136,3 @@ searchInput.addEventListener("input", () => {
     displayClearSearchButton()
     search()
 })
-
-// Checking that whether note content field is not empty
