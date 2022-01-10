@@ -1,8 +1,0 @@
-* {
-    background: rgb(24 24 27 / var(--tw-bg-opacity));
-    color: rgb(212 212 212);
-}
-input, textarea, nav i{
-    outline: 0px;
-    border-radius: 3px;
-}
