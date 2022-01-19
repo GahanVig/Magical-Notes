@@ -68,7 +68,7 @@ function showNotes(notes) {
         masonry();
     }, 1);
 
-    // Hiding the delete all notes button if there is no note present
+    // Hiding the delete all notes button if there is no note present 
     if (notes.length <= 0) {
         deleteAll.classList.add("hidden");
     }
