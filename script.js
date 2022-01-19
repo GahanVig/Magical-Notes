@@ -4,6 +4,8 @@ const notesContainer = document.getElementById("notesContainer");
 const noteContent = document.getElementById("noteContent");
 const noteTitle = document.getElementById("noteTitle");
 const searchInput = document.getElementById("searchInput");
+const cancelBtn = document.getElementById("cancelBtn");
+const deleteAll = document.getElementById("deleteAll");
 // Accessing notes from the local storage
 let notes = localStorage.getItem("notes");
 
@@ -14,6 +16,7 @@ if (notes == null) {
 else {
     notes = JSON.parse(localStorage.getItem("notes"))
 }
+// Background colors of the notes
 const bgClasses = [
     'bg-red-800',
     'bg-green-900',
@@ -24,15 +27,18 @@ const bgClasses = [
 ];
 showNotes(notes)
 
+// Adding focus to the note title when the page loads.
 noteTitle.focus()
 // Function for adding masonry layout to the NoteContainer
-function masonry () {
+function masonry() {
     const masonryGrid = new Masonry(notesContainer)
 }
 setInterval(() => {
     addNote.disabled = noteContent.value == '' || noteTitle.value == '';
     addNote.classList.remove("hover:bg-neutral-700")
 }, 1);
+
+// The main showNotes function which will display all the notes in the notecontainer.
 function showNotes(notes) {
     noteHTML = ``;
     notes.forEach((element, index) => {
@@ -61,6 +67,11 @@ function showNotes(notes) {
     setTimeout(() => {
         masonry();
     }, 1);
+
+    // Hiding the delete all notes button if there is no note present
+    if (notes.length <= 0) {
+        deleteAll.classList.add("hidden");
+    }
 }
 async function displayClearSearchButton() {
     // This function will show the clear button when the search area is not empty
@@ -72,6 +83,7 @@ async function displayClearSearchButton() {
         clearSearchInput.classList.add("opacity-0");
     }
 }
+// Function for deleting note
 async function deleteNote(noteIndex) {
     notes.splice(noteIndex, 1);
     if (notes.length > 0) {
@@ -83,24 +95,33 @@ async function deleteNote(noteIndex) {
     showNotes(notes)
     // Showing message to the user that the note is deleted
 }
+cancelBtn.addEventListener("click", () => {
+    addNote.innerText = 'Add note';
+    noteContent.value = null;
+    noteTitle.value = null;
+    cancelBtn.classList.add("hidden");
+})
+// Function for editing the note
 async function editNote(noteIndex) {
     addNote.innerText = 'Save Edits';
+    cancelBtn.classList.remove('hidden');
     noteTitle.value = notes[noteIndex].title;
     noteContent.value = notes[noteIndex].content;
-    let random = Math.floor(Math.random() * bgClasses.length);
-    addNote.addEventListener("click", () =>{
+    addNote.addEventListener("click", () => {
         if (addNote.innerText === "Save Edits") {
             notes[noteIndex] = {
                 title: noteTitle.value,
                 content: noteContent.value,
-                background: bgClasses[random]
+                background: notes[noteIndex].background
             };
-            localStorage.setItem("notes", JSON.stringify(notes))
-            showNotes(notes)
+            localStorage.setItem("notes", JSON.stringify(notes));
+            showNotes(notes);
+            cancelBtn.classList.add("hidden");
         }
     })
 
 }
+// Function for searching for notes
 
 async function search() {
     let query = searchInput.value;
@@ -116,21 +137,27 @@ async function search() {
     })
     showNotes(searchedNotes);
 }
+// function for adding the notes
 addNote.addEventListener("click", () => {
     let randomNum = Math.floor(Math.random() * bgClasses.length);
-    if (addNote.innerText === "Add Note"){
+    if (addNote.innerText === "Add Note") {
         notes.push({
             title: noteTitle.value,
             content: noteContent.value,
             background: bgClasses[randomNum]
         })
-            localStorage.setItem("notes", JSON.stringify(notes));
-            showNotes(notes);
-            noteContent.value = null;
-            noteTitle.value = null;
+        localStorage.setItem("notes", JSON.stringify(notes));
+        showNotes(notes);
+        noteContent.value = null;
+        noteTitle.value = null;
     }
 })
-
+// Function for delete all notes.
+deleteAll.addEventListener("click", () => {
+    localStorage.removeItem('notes');
+    notes = [];
+    showNotes(notes);
+})
 searchInput.addEventListener("input", () => {
     // Adding the clear button when the user start searching
     displayClearSearchButton()
