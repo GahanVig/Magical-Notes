@@ -13,9 +13,7 @@ if (notes == null) {
     localStorage.setItem("notes", JSON.stringify([]));
     notes = JSON.parse(localStorage.getItem("notes"));
 }
-else {
-    notes = JSON.parse(localStorage.getItem("notes"))
-}
+else notes = JSON.parse(localStorage.getItem("notes"));
 // Background colors of the notes
 const bgClasses = [
     'bg-red-800',
@@ -46,14 +44,14 @@ function showNotes(notes) {
         <div class="px-3 py-4 ${element.background} my-3 mx-3 rounded-lg shadow-sm shadow-black w-72">
             <div style="position: absolute; width: 100%;">
             </div>
-            <div class="card-body mb-3 ${element.background}">
-                <h5 class="noteTitle ${element.background} font-semibold text-lg title-${index}"></h5>
-                <p class="noteContent ${element.background} text-md content-${index}"></p>
+            <div class="card-body mb-3">
+                <h5 class="noteTitle font-semibold text-lg title-${index}"></h5>
+                <p class="noteContent text-md content-${index}"></p>
             </div>
-            <div class="flex items-center w-full ${element.background} justify-end mx-2 mt-6 mb-1">
-                <div class="flex justify-evenly w-1/4 ${element.background}">
-                    <i class="fa fa-pen fa-lg ${element.background} rounded-full cursor-pointer hover:bg-opacity-50 hover:bg-neutral-700" data-bs-toggle="modal" data-bs-target="#editModal" onclick="editNote(${index})"></i>
-                    <i class="fa fa-trash-can fa-lg ${element.background} rounded-full cursor-pointer hover:bg-opacity-50 hover:bg-neutral-700" onclick="deleteNote(${index})"></i>
+            <div class="flex items-center w-full justify-end mx-2 mt-6 mb-1">
+                <div class="flex justify-evenly w-1/4">
+                    <i class="fa fa-pen fa-lg rounded-full cursor-pointer hover:bg-opacity-50 hover:bg-neutral-700" data-bs-toggle="modal" data-bs-target="#editModal" onclick="editNote(${index})"></i>
+                    <i class="fa fa-trash-can fa-lg rounded-full cursor-pointer hover:bg-opacity-50 hover:bg-neutral-700" onclick="deleteNote(${index})"></i>
                 </div>
             </div>
         </div>
@@ -69,29 +67,19 @@ function showNotes(notes) {
     }, 1);
 
     // Hiding the delete all notes button if there is no note present 
-    if (notes.length <= 0) {
-        deleteAll.classList.add("hidden");
-    }
+    if (notes.length <= 0) deleteAll.classList.add("hidden");
 }
 async function displayClearSearchButton() {
     // This function will show the clear button when the search area is not empty
     let clearSearchInput = document.getElementById("clearSearchInput");
-    if (searchInput.value != "") {
-        clearSearchInput.classList.remove("opacity-0");
-    }
-    else {
-        clearSearchInput.classList.add("opacity-0");
-    }
+    if (searchInput.value != "") clearSearchInput.classList.remove("opacity-0");
+    else clearSearchInput.classList.add("opacity-0");
 }
 // Function for deleting note
 async function deleteNote(noteIndex) {
     notes.splice(noteIndex, 1);
-    if (notes.length > 0) {
-        localStorage.setItem("notes", JSON.stringify(notes))
-    }
-    else {
-        localStorage.setItem("notes", "[]")
-    }
+    if (notes.length > 0) localStorage.setItem("notes", JSON.stringify(notes))
+    else localStorage.setItem("notes", "[]")
     showNotes(notes)
     // Showing message to the user that the note is deleted
 }
